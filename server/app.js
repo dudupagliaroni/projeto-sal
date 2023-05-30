@@ -2,16 +2,18 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-app.use((req, res,next ) => {
-    console.log("testanto")
-    next();
-})
+app.get('/user', (req, res) => {
 
-app.use((req, res) => {
- res.send("estou bem")
-})
+});
 
+app.get('/conteudo', (req, res) => {
+
+});
+
+app.get('/autores', (req, res) => {
+
+});
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+    console.log(`app listening on port ${port}`)
 })
 
