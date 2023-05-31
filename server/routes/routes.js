@@ -1,9 +1,12 @@
 const express = require('express');
+const connection = require('../database/connection')
 const routes = express.Router();
 
 
 routes.get('/users', (req, res) => {
-    res.send("Usuarios")
+
+        console.log(connection);
+
 });
 
 routes.get('/users/:id', (req, res) => {
@@ -24,5 +27,6 @@ routes.get('/autores', (req, res) => {
 routes.get('/autores/:id', (req, res) => {
     res.send("Autor:" + req.params.id)
 });
+
 
 module.exports = routes;
