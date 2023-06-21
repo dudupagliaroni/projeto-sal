@@ -6,6 +6,15 @@ const User = require("../models/user");
 routes.use(express.json());
 
 routes.get("/users", (req, res) => {
+  User.findAll()
+  .then((users) => {
+    // console.log('Users retrieved successfully:', users);
+    res.status(200).json(users); // Respond with the retrieved users
+  })
+  .catch((error) => {
+    console.error('Error retrieving users:', error);
+    res.status(500).json({ error: 'Internal Server Error' }); // Respond with an error message
+  });
 });
 
 routes.get("/users/:id", (req, res) => {
@@ -34,6 +43,11 @@ routes.get("/autores", (req, res) => {
 
 routes.get("/autores/:id", (req, res) => {
   res.send("Autor:" + req.params.id);
+});
+
+routes.get("/table", (req, res) => {
+  User.build();
+  User.getTable();
 });
 
 routes.post('/users', (req, res) => {
