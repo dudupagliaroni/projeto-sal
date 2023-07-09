@@ -1,75 +1,148 @@
 const express = require("express");
 const connection = require("../database/connection");
 const routes = express.Router();
-const User = require("../models/user");
+const models = require("../models/index");
+const cors = require("cors");
+const { faker } = require("@faker-js/faker");
 
 routes.use(express.json());
 
-routes.get("/users", (req, res) => {
-  User.findAll()
-  .then((users) => {
-    // console.log('Users retrieved successfully:', users);
-    res.status(200).json(users); // Respond with the retrieved users
-  })
-  .catch((error) => {
-    console.error('Error retrieving users:', error);
-    res.status(500).json({ error: 'Internal Server Error' }); // Respond with an error message
-  });
+routes.get("/users", cors(), (req, res) => {
+  models.User.findAll()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((error) => {
+      console.error("Error retrieving users:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
 });
 
-routes.get("/users/:id", (req, res) => {
-  User.findOne({
+routes.get("/users/:id", cors(), (req, res) => {
+  models.User.findOne({
     where: { id: req.params.id },
   })
-    .then((user) => {res.send(user);
+    .then((user) => {
+      res.send(user);
     })
     .catch((error) => {
       console.error("Error retrieving user:", error);
     });
-
-    
 });
 
-routes.get("/conteudos", (req, res) => {
-  res.send("Conteudos");
+routes.get("/conteudos", cors(), (req, res) => {
+  models.Conteudo.findAll({
+    include: [models.Autor],
+    order: [["createdAt", "DESC"]],
+  })
+    .then((conteudos) => {
+      res.status(200).json(conteudos);
+    })
+    .catch((error) => {
+      console.error("Error retrieving users:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
 });
-routes.get("/conteudos/:di", (req, res) => {
+
+routes.get("/users/:id", cors(), (req, res) => {
+  models.User.findOne({
+    where: { id: req.params.id },
+  })
+    .then((user) => {
+      res.send(user);
+    })
+    .catch((error) => {
+      console.error("Error retrieving user:", error);
+    });
+});
+routes.get("/conteudos/:di", cors(), (req, res) => {
   res.send("Conteudo:" + req.params.id);
 });
 
-routes.get("/autores", (req, res) => {
+routes.post("/conteudos/", cors(), (req, res) => {
+  console.log(req.body.titulo); // Accessing the 'titulo' property from the request body
+  console.log(req.body.conteudo); // Accessing the
+  const conteudo = models.Conteudo.build({
+    autorId: 1,
+    titulo: req.body.titulo,
+    conteudo: req.body.conteudo,
+  });
+  conteudo
+    .save()
+    .then((conteudoSaved) => {
+      console.log("User saved successfully:", conteudoSaved);
+      res.status(201).json(conteudoSaved);
+    })
+    .catch((error) => {
+      console.error("Error saving user:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+});
+
+routes.get("/autores", cors(), (req, res) => {
   res.send("Autores");
 });
 
-routes.get("/autores/:id", (req, res) => {
+routes.get("/autores/:id", cors(), (req, res) => {
   res.send("Autor:" + req.params.id);
 });
 
-routes.get("/table", (req, res) => {
-  User.build();
-  User.getTable();
-});
-
-routes.post('/users', (req, res) => {
-  
-  const { username, email, password } = req.body;
-
-  const newUser = User.build({
-    username: username,
-    email: email,
-    password: password
+routes.get("/conteudomock", cors(), (req, res) => {
+  const conteudo = models.Conteudo.build({
+    autorId: 1,
+    titulo: faker.music.songName(),
+    conteudo: faker.lorem.text(),
+    createdAt: faker.date.past(),
   });
 
-  newUser.save()
-    .then((savedUser) => {
-      console.log('User saved successfully:', savedUser);
-      res.status(201).json(savedUser); // Respond with the saved user
+  conteudo
+    .save()
+    .then((saved) => {
+      console.log("User saved successfully:", saved);
+      res.status(201).json(saved);
     })
     .catch((error) => {
-      console.error('Error saving user:', error);
-      res.status(500).json({ error: 'Internal Server Error' }); // Respond with an error message
+      console.error("Error saving user:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     });
+});
 
+routes.get("/usermock", (req, res) => {
+  const { username, email, password } = req.body;
+
+  const newUser = models.User.build({
+    username: faker.person.fullName(),
+    email: faker.internet.email(),
+    password: faker.internet.password(),
+  });
+
+  newUser
+    .save()
+    .then((savedUser) => {
+      console.log("User saved successfully:", savedUser);
+      res.status(201).json(savedUser);
+    })
+    .catch((error) => {
+      console.error("Error saving user:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+});
+
+routes.get("/autormock", cors(), (req, res) => {
+  const autor = models.Autor.build({
+    nome: faker.person.fullName(),
+  });
+
+  autor
+    .save()
+    .then((savedUser) => {
+      console.log("User saved successfully:", savedUser);
+      res.status(201).json(savedUser);
+    })
+    .catch((error) => {
+      console.error("Error saving user:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
 });
 
 module.exports = routes;

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Conteudo</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="../home/style.css" rel="stylesheet">
+</head>
+<body>
+
+<h1 class="m-10">
+    Novo Conteúdo
+</h1>
+
+<form>
+    <div class="m-10 d-flex justify-content-center">
+        <div class="d-flex w-50">
+            <div class="d-flex">
+                <label for="titulo">Título:</label>
+                <input id="titulo" name="title" required type="text">
+            </div>
+
+            <div class="d-flex">
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+            <div class="d-flex df-row m-10">
+                <label for="publish">Publicado:</label>
+                <input id="publish" name="publish" type="checkbox">
+            </div>
+            <div class="d-flex justify-content-center">
+                <button id="btn-salvar" class="btn-blue" type="button">Salvar</button>
+            </div>
+
+        </div>
+    </div>
+
+</form>
+<script src="./novoConteudoControlller.js"></script>
+</body>
+</html>
